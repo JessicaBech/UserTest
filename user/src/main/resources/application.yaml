@@ -1,0 +1,32 @@
+# Server Configuration
+server:
+  port: 3080
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/UsersDB
+    username: root
+    password: JESSjbb@123.123
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    redisson:
+      config: classpath:redisson-dev.yaml
+
+  cache:
+    type: redis
+    redis:
+      # Defines the cache update interval in milliseconds
+      # every 1 hour
+      time-to-live: 3600000
+
+
+
+

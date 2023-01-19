@@ -2,6 +2,8 @@ package com.example.user.user;
 
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.Positive;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -11,10 +13,11 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @Builder
-public class UserEntities {
+public class UserEntities implements Serializable {
 
     @Id
     @Column(name="id")
+    @Positive
     private Long id;
 
     @Column(name="firstName")
