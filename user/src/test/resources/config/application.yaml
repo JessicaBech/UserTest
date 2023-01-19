@@ -1,8 +1,29 @@
+# Server Configuration
+server:
+  port: 3080
+
+#Spring properties
 spring:
- datasource:
-   url: jdbc:h2:mem:UsersDB
-   username: root
-   password: JESSjbb@123.123
-   driverClassName: org.h2.Driver
- jpa:
-   database-platform: org.hibernate.dialect.H2Dialect
+  profiles:
+    active: test
+  datasource:
+    url: jdbc:h2:~/test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;INIT=RUNSCRIPT FROM 'classpath:scripts/create_script.sql'
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    redisson:
+      config: classpath:redisson-test.yaml
+
+  cache:
+    type: redis
+    redis:
+      # Defines the cache update interval in milliseconds
+      # every 1 hour
+      time-to-live: 3600000

@@ -47,7 +47,7 @@ class UserServiceTest {
 
         when(userRepository.findAll()).thenReturn(userList);
 
-        List<UserEntities> fetchedUsers = userService.getAllUsers();
+        List<UserEntities> fetchedUsers = userService.getAllUsersFromDb();
         assertThat(fetchedUsers.size()).isEqualTo(2);
     }
 

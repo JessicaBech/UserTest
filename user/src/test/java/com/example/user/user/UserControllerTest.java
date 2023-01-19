@@ -8,6 +8,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest(UserController.class)
 @RunWith(SpringRunner.class)
 class UserControllerTest {
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Autowired
     private MockMvc mvc;
@@ -62,9 +68,9 @@ class UserControllerTest {
 
         List<UserEntities> allUsers = Arrays.asList(user1,user2);
 
-        given(userService.getAllUsers()).willReturn(allUsers);
+        given(userService.getAllUsersFromDb()).willReturn(allUsers);
 
-        mvc.perform(get("/api/all")
+        mvc.perform(get("/api/all/database")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
@@ -111,5 +117,34 @@ class UserControllerTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    @DisplayName("It should get all users in cache")
+    public void getAllUsersInCache() throws Exception {
+        MvcResult result = mvc.perform(
+                        get("/api/all/cache")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+        Assertions.assertNotNull(content);
+
+        JsonElement output = JsonParser.parseString(content);
+        System.out.println("Users: " + gson.toJson(output));
+
+    }
+    @Test
+    @DisplayName("It should get refresh cache")
+    public void refreshUsers() throws Exception {
+        MvcResult result = mvc.perform(
+                        get("/api/refreshCache")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+        Assertions.assertNotNull(content);
+
+        System.out.println("OUTPUT: " + content);
     }
 }
